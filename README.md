@@ -91,6 +91,83 @@ The project is structured week-wise to gradually introduce advanced Spark concep
 
 ---
 
+### 5. Power BI Dashboard
+**DAX Measures for**.
+- Supply Chain Measures
+- Clickstream Measures
+- Rolling & Revenue Measures
+
+**Supply Chain Measures**
+```
+Total Revenue = SUM(SupplyChainAgg[TotalSales])
+```
+
+```
+Avg Delay Days = AVERAGE(SupplyChainAgg[AvgDelayDays])
+```
+
+```
+Total Orders = SUM(SupplyChainAgg[OrderCount])
+```
+
+```
+Revenue by Region = 
+CALCULATE(
+    [Total Revenue],
+    ALLEXCEPT(SupplyChainAgg, SupplyChainAgg[OrderRegion])
+)
+```
+
+```
+% of Total Revenue = 
+DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALL(SupplyChainAgg)), 0)
+```
+
+**Clickstream Measures**
+
+```
+Total Clicks = SUM(ClickstreamUserAgg[TotalClicks])
+```
+
+```
+Avg Time on Page (min) = AVERAGE(ClickstreamUserAgg[AvgTimeOnPageSec]) / 60
+```
+
+```
+Engaged Users = COUNTROWS(ClickstreamUserAgg)
+```
+
+**Rolling & Revenue Measures**
+```
+7d Rolling Avg = AVERAGE(RollingSales7d[RollingAvgSales7d])
+```
+
+```
+Daily Revenue = SUM(CumulativeRevenue[DailyRevenue])
+```
+
+```
+Cumulative Revenue = SUM(CumulativeRevenue[CumulativeRevenue])
+```
+
+```
+Total Cumulative Revenue = 
+VAR LastDate = MAX(CumulativeRevenue[OrderDate])
+RETURN CALCULATE(SUM(CumulativeRevenue[CumulativeRevenue]), CumulativeRevenue[OrderDate] = LastDate)
+```
+
+**Built the 3-Page Story**
+- Supply Chain Performance by Region & Category
+![SupplyChainOverView](SupplyChainOverView.png)
+
+- User Engagement & Clickstream Analytics
+![ClickStreamuSEReNGAGEMENT](ClickStreamuSEReNGAGEMENT.png)
+
+- Revenue Trends & Delays
+![RevenueTrendDelays](RevenueTrendDelays.png)
+
+---
+
 ## Documentation
 - All steps, commands, and explanations are documented in `supply_chain.ipynb`.
 - Code execution is handled via `.py` files using `spark-submit`.
